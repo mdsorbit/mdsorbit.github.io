@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080f20">
+<title>MDS ORBIT — Explore Beyond the Ordinary</title>
+<meta name="description" content="Discover useful AI, apps, websites and digital tools in one place.">
+<style>
+:root{color-scheme:dark;--bg:#080f20;--panel:#111e35;--line:#263d60;--muted:#9fb1cb;--blue:#4b8cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#21477b,transparent 55%),var(--bg);color:#f4f7ff;font:16px Inter,system-ui,sans-serif}
+.wrap{width:min(1100px,calc(100% - 36px));margin:auto}header{height:72px;border-bottom:1px solid #ffffff18;display:flex;align-items:center}
+.nav{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;letter-spacing:.12em}.brand span{display:inline-grid;place-items:center;background:linear-gradient(135deg,#3888ff,#7560ff);width:36px;height:36px;border-radius:11px;margin-right:9px}
+nav{display:flex;gap:24px}a{color:inherit;text-decoration:none}nav a{color:#b8c8df;font-size:14px}
+.hero{text-align:center;padding:100px 0 65px}.tag{color:#9bc2ff;border:1px solid #426da8;border-radius:30px;padding:8px 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:clamp(44px,7vw,78px);line-height:1.04;letter-spacing:-.06em;margin:28px 0 18px}.glow{background:linear-gradient(90deg,#fff,#91c5ff,#71e0ff);background-clip:text;color:transparent}
+.hero p{max-width:650px;margin:0 auto 30px;color:var(--muted);line-height:1.7}.search{display:flex;max-width:680px;margin:auto;padding:8px;background:var(--panel);border:1px solid #385681;border-radius:14px}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;color:white;padding:12px}.search button,.cta{border:0;border-radius:10px;padding:13px 20px;color:white;background:linear-gradient(120deg,#347cff,#675cff);font-weight:700;cursor:pointer}
+.section{padding:30px 0}.section h2{font-size:28px}.cats,.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cat,.card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#142440,#0e192b);padding:20px}.cat{cursor:pointer;color:white;text-align:left}.cat:hover,.card:hover{border-color:#5797ff}
+.cat b{display:block;margin:9px 0 5px}.muted,.card p{color:var(--muted);font-size:13px;line-height:1.6}.card h3{margin:0 0 6px}.card a{color:#9bc2ff;font-size:13px;font-weight:700}
+.footer{border-top:1px solid #ffffff18;margin-top:60px;padding:28px 0;color:var(--muted);font-size:12px}
+@media(max-width:650px){nav{display:none}.hero{padding:70px 0 45px}.cats,.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:430px){.cats,.cards{grid-template-columns:1fr}}
+</style></head>
+<body><header><div class="wrap nav"><a class="brand" href="#"><span>◉</span>MDS ORBIT</a><nav><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="#about">About</a></nav></div></header>
+<main class="wrap"><section class="hero"><span class="tag">Your gateway to the digital universe</span><h1>Explore beyond<br><span class="glow">the ordinary.</span></h1><p>Discover useful AI, powerful tools, creative apps and digital experiences — all in one place.</p><div class="search"><input id="q" placeholder="Search AI, apps, websites and tools..." aria-label="Search"><button onclick="searchItems()">Search</button></div></section>
+<section class="section" id="categories"><h2>Explore by interest</h2><div class="cats">
+<button class="cat" onclick="filterItems('AI')">✦<b>AI & Assistants</b><small class="muted">Smart tools for everyday life</small></button>
+<button class="cat" onclick="filterItems('Design')">◈<b>Design & Media</b><small class="muted">Create something new</small></button>
+<button class="cat" onclick="filterItems('Productivity')">⌘<b>Productivity</b><small class="muted">Work smarter</small></button>
+<button class="cat" onclick="filterItems('Learning')">◎<b>Learning</b><small class="muted">Grow your skills</small></button>
+<button class="cat" onclick="filterItems('Entertainment')">▷<b>Entertainment</b><small class="muted">Explore and enjoy</small></button>
+<button class="cat" onclick="filterItems('All')">✧<b>Everything</b><small class="muted">Browse all discoveries</small></button></div></section>
+<section class="section" id="discover"><h2>Featured discoveries</h2><div class="cards" id="cards"></div></section>
+<section class="section" id="about"><h2>One destination. Endless discovery.</h2><p class="muted">MDS ORBIT is an independent discovery platform for useful digital resources, AI services, creative tools, learning and entertainment.</p></section></main>
+<footer class="footer"><div class="wrap">MDS ORBIT · Explore beyond the ordinary · © <span id="year"></span></div></footer>
+<script>
+const resources=[
+['ChatGPT','AI','An AI assistant for writing, learning and everyday tasks.','https://chatgpt.com'],
+['Gemini','AI','Google’s AI assistant for ideas and research.','https://gemini.google.com'],
+['Claude','AI','An AI assistant for writing and analysis.','https://claude.ai'],
+['Canva','Design','Create presentations, graphics and visual content.','https://canva.com'],
+['Photopea','Design','Edit images in your browser.','https://photopea.com'],
+['Adobe Express','Design','Create graphics and short videos.','https://www.adobe.com/express'],
+['iLovePDF','Productivity','Manage and convert PDF files.','https://www.ilovepdf.com'],
+['Google Translate','Productivity','Translate text across languages.','https://translate.google.com'],
+['DeepL','Productivity','Translate text and documents.','https://www.deepl.com'],
+['Khan Academy','Learning','Free lessons across many subjects.','https://www.khanacademy.org'],
+['Duolingo','Learning','Learn languages with short lessons.','https://www.duolingo.com'],
+['YouTube','Entertainment','Explore videos, creators and tutorials.','https://youtube.com']
+];let activeCategory='All';
+function draw(){const term=document.getElementById('q').value.toLowerCase();const list=resources.filter(x=>(activeCategory==='All'||x[1]===activeCategory)&&x.join(' ').toLowerCase().includes(term));document.getElementById('cards').innerHTML=list.map(x=>'<article class="card"><h3>'+x[0]+'</h3><small class="muted">'+x[1]+'</small><p>'+x[2]+'</p><a href="'+x[3]+'" target="_blank" rel="noopener">Visit website ↗</a></article>').join('')||'<p class="muted">No matching resources found.</p>'}
+function filterItems(c){activeCategory=c;draw();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
+function searchItems(){draw();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
+document.getElementById('q').addEventListener('input',draw);document.getElementById('year').textContent=new Date().getFullYear();draw();
+</script></body></html>
