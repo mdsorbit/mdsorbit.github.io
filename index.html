@@ -65,12 +65,12 @@ const tools=[
 {name:'edX',cat:'Learning',desc:'Discover online courses from universities and institutions.',url:'https://www.edx.org',domain:'edx.org',pricing:'Freemium'},
 {name:'YouTube',cat:'Entertainment',desc:'Discover videos, creators, tutorials and entertainment.',url:'https://www.youtube.com',domain:'youtube.com',pricing:'Freemium'},
 {name:'Spotify',cat:'Entertainment',desc:'Explore music, podcasts and audio experiences.',url:'https://open.spotify.com',domain:'spotify.com',pricing:'Freemium'},
-{name:'itch.io',cat:'Entertainment',desc:'Discover independent games and creative projects.',url:'https://itch.io',domain:'itch.io'},
-{name:'Twitch',cat:'Entertainment',desc:'Watch live streams, gaming and creator communities.',url:'https://www.twitch.tv',domain:'twitch.tv'},
-{name:'Poe',cat:'AI',desc:'Discover and chat with multiple AI bots in one place.',url:'https://poe.com',domain:'poe.com'},
+{name:'itch.io',cat:'Entertainment',desc:'Discover independent games and creative projects.',url:'https://itch.io',domain:'itch.io',pricing:'Free'},
+{name:'Twitch',cat:'Entertainment',desc:'Watch live streams, gaming and creator communities.',url:'https://www.twitch.tv',domain:'twitch.tv',pricing:'Freemium'},
+{name:'Poe',cat:'AI',desc:'Discover and chat with multiple AI bots in one place.',url:'https://poe.com',domain:'poe.com',pricing:'Freemium'},
 {name:'Hugging Face',cat:'AI',desc:'Explore machine-learning models, datasets and interactive demos.',url:'https://huggingface.co',domain:'huggingface.co',pricing:'Freemium'},
 {name:'NotebookLM',cat:'AI',desc:'Research and learn from your own source materials with AI.',url:'https://notebooklm.google.com',domain:'notebooklm.google.com',pricing:'Free'},
-{name:'Character.AI',cat:'AI',desc:'Chat with community-created AI characters.',url:'https://character.ai',domain:'character.ai'},
+{name:'Character.AI',cat:'AI',desc:'Chat with community-created AI characters.',url:'https://character.ai',domain:'character.ai',pricing:'Freemium'},
 {name:'Pixlr',cat:'Design',desc:'Edit photos and create designs with online creative tools.',url:'https://pixlr.com',domain:'pixlr.com',pricing:'Freemium'},
 {name:'Krita',cat:'Design',desc:'Create digital paintings with a free, open-source art app.',url:'https://krita.org',domain:'krita.org',pricing:'Free'},
 {name:'Unsplash',cat:'Design',desc:'Discover photography for creative and visual projects.',url:'https://unsplash.com',domain:'unsplash.com',pricing:'Free'},
@@ -80,7 +80,7 @@ const tools=[
 {name:'PDF24 Tools',cat:'Productivity',desc:'Use online tools to create, convert and edit PDF files.',url:'https://tools.pdf24.org',domain:'tools.pdf24.org',pricing:'Free'},
 {name:'Google Drive',cat:'Productivity',desc:'Store, organise and share files in the cloud.',url:'https://drive.google.com',domain:'drive.google.com',pricing:'Freemium'},
 {name:'Trello',cat:'Productivity',desc:'Organise tasks and projects with visual boards.',url:'https://trello.com',domain:'trello.com',pricing:'Freemium'},
-{name:'WeTransfer',cat:'Productivity',desc:'Send and share files online.',url:'https://wetransfer.com',domain:'wetransfer.com'},
+{name:'WeTransfer',cat:'Productivity',desc:'Send and share files online.',url:'https://wetransfer.com',domain:'wetransfer.com',pricing:'Freemium'},
 {name:'freeCodeCamp',cat:'Learning',desc:'Learn coding with free interactive lessons and projects.',url:'https://www.freecodecamp.org',domain:'freecodecamp.org',pricing:'Free'},
 {name:'MIT OpenCourseWare',cat:'Learning',desc:'Access free learning materials from MIT courses.',url:'https://ocw.mit.edu',domain:'ocw.mit.edu',pricing:'Free'},
 {name:'OpenLearn',cat:'Learning',desc:'Explore free courses from The Open University.',url:'https://www.open.edu/openlearn',domain:'www.open.edu',pricing:'Free'},
@@ -88,17 +88,17 @@ const tools=[
 {name:'Internet Archive',cat:'Entertainment',desc:'Explore a digital library of books, media and archived websites.',url:'https://archive.org',domain:'archive.org',pricing:'Free'},
 {name:'TED',cat:'Entertainment',desc:'Watch talks and discover ideas from speakers worldwide.',url:'https://www.ted.com',domain:'ted.com',pricing:'Free'},
 {name:'SoundCloud',cat:'Entertainment',desc:'Discover music and audio shared by creators.',url:'https://soundcloud.com',domain:'soundcloud.com',pricing:'Freemium'},
-{name:'Board Game Arena',cat:'Entertainment',desc:'Play board games online with people around the world.',url:'https://boardgamearena.com',domain:'boardgamearena.com'},
+{name:'Board Game Arena',cat:'Entertainment',desc:'Play board games online with people around the world.',url:'https://boardgamearena.com',domain:'boardgamearena.com',pricing:'Freemium'},
 {name:"Mistral Le Chat",cat:"AI",desc:"Explore Mistral AI's assistant for research, writing and ideas.",url:"https://chat.mistral.ai",domain:"mistral.ai",pricing:'Freemium'},
 {name:"OpenRouter",cat:"AI",desc:"Discover and compare access to many AI models in one interface.",url:"https://openrouter.ai",domain:"openrouter.ai",pricing:'Freemium'},
-{name:"Vectr",cat:"Design",desc:"Create and edit vector graphics with an online design tool.",url:"https://vectr.com",domain:"vectr.com"},
-{name:"SVG Repo",cat:"Design",desc:"Browse a large collection of free SVG icons and vectors.",url:"https://www.svgrepo.com",domain:"svgrepo.com"},
+{name:"Vectr",cat:"Design",desc:"Create and edit vector graphics with an online design tool.",url:"https://vectr.com",domain:"vectr.com",pricing:'Freemium'},
+{name:"SVG Repo",cat:"Design",desc:"Browse a large collection of free SVG icons and vectors.",url:"https://www.svgrepo.com",domain:"svgrepo.com",pricing:'Free'},
 {name:"Tally",cat:"Productivity",desc:"Create online forms and collect responses with a simple form builder.",url:"https://tally.so",domain:"tally.so",pricing:'Freemium'},
 {name:"Excalidraw",cat:"Productivity",desc:"Sketch diagrams and ideas on a collaborative virtual whiteboard.",url:"https://excalidraw.com",domain:"excalidraw.com",pricing:'Free'},
-{name:"GCFGlobal",cat:"Learning",desc:"Learn technology, computer basics and practical skills with free lessons.",url:"https://edu.gcfglobal.org",domain:"gcfglobal.org"},
-{name:"Project Gutenberg",cat:"Learning",desc:"Read thousands of free public-domain ebooks and classic texts.",url:"https://www.gutenberg.org",domain:"gutenberg.org"},
-{name:"Game Jolt",cat:"Entertainment",desc:"Discover indie games, creators and gaming communities.",url:"https://gamejolt.com",domain:"gamejolt.com"},
-{name:"Radio Garden",cat:"Entertainment",desc:"Explore live radio stations from around the world on an interactive globe.",url:"https://radio.garden",domain:"radio.garden"}
+{name:"GCFGlobal",cat:"Learning",desc:"Learn technology, computer basics and practical skills with free lessons.",url:"https://edu.gcfglobal.org",domain:"gcfglobal.org",pricing:'Free'},
+{name:"Project Gutenberg",cat:"Learning",desc:"Read thousands of free public-domain ebooks and classic texts.",url:"https://www.gutenberg.org",domain:"gutenberg.org",pricing:'Free'},
+{name:"Game Jolt",cat:"Entertainment",desc:"Discover indie games, creators and gaming communities.",url:"https://gamejolt.com",domain:"gamejolt.com",pricing:'Free'},
+{name:"Radio Garden",cat:"Entertainment",desc:"Explore live radio stations from around the world on an interactive globe.",url:"https://radio.garden",domain:"radio.garden",pricing:'Free'}
 ];
 let active='All',saved=[],savedMode=false;
 try{const stored=JSON.parse(localStorage.getItem('orbitSaved')||'[]');if(Array.isArray(stored))saved=stored.filter(x=>typeof x==='string')}catch(e){saved=[];}
@@ -116,7 +116,7 @@ const hubPages=[
 {name:'Design Showcase',cat:'Platform',desc:'Explore visual concepts and interface inspiration.',url:'showcase.html',keys:'design showcase inspiration ui interface'}
 ];
 function hubCard(p){return '<article class="tool"><div class="tooltop"><span class="toollogo"><b>✳</b></span><div><div class="toolname">'+p.name+'</div><div class="toolcat">MDS ORBIT · '+p.cat+'</div></div></div><p>'+p.desc+'</p><div class="toolbottom"><a class="visit" href="'+p.url+'">Open section ↗</a></div></article>'}
-function render(){let q=document.getElementById('searchInput').value.trim().toLowerCase();let list=tools.filter(t=>(active==='All'||t.cat===active)&&(!savedMode||saved.includes(t.name))&&(!q||(t.name+' '+t.cat+' '+t.desc).toLowerCase().includes(q)));let hubs=(!savedMode&&(!q||q.length>0))?hubPages.filter(p=>q&&(p.name+' '+p.desc+' '+p.keys).toLowerCase().includes(q)):[];let html=list.map(card).join('')+hubs.map(hubCard).join('');document.getElementById('toolGrid').innerHTML=html||'<div class="empty">No matching tools or sections found. Try another search or category.</div>';const resultCount=document.getElementById('resultCount');if(resultCount)resultCount.textContent=savedMode?list.length+' saved resources':list.length+hubs.length+' matching results · '+tools.length+' directory resources';document.getElementById('savedCount').textContent=saved.length;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===active))}
+function render(){let q=document.getElementById('searchInput').value.trim().toLowerCase();let list=tools.filter(t=>(active==='All'||t.cat===active)&&(!savedMode||saved.includes(t.name))&&(!q||(t.name+' '+t.cat+' '+t.desc+' '+(t.pricing||'')).toLowerCase().includes(q)));let hubs=(!savedMode&&(!q||q.length>0))?hubPages.filter(p=>q&&(p.name+' '+p.desc+' '+p.keys).toLowerCase().includes(q)):[];let html=list.map(card).join('')+hubs.map(hubCard).join('');document.getElementById('toolGrid').innerHTML=html||'<div class="empty">No matching tools or sections found. Try another search or category.</div>';const resultCount=document.getElementById('resultCount');if(resultCount)resultCount.textContent=savedMode?list.length+' saved resources':list.length+hubs.length+' matching results · '+tools.length+' directory resources';document.getElementById('savedCount').textContent=saved.length;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===active))}
 function setFilter(c){active=c;savedMode=false;render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.filter)));
 document.getElementById('searchInput').addEventListener('input',render);document.getElementById('searchBtn').addEventListener('click',()=>{render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})});
