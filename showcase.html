@@ -39,7 +39,7 @@ footer{border-top:1px solid #ffffff18;margin-top:42px;padding:24px 0;color:#8295
 </section>
 <section class="cta"><div class="eyebrow">Build your next idea</div><h2>Need a starting point?</h2><p>Explore visual prompts and adapt a concept into your own creative direction.</p><a href="prompts.html">Explore Prompt Library ↗</a></section>
 </main>
-<footer><div class="wrap">© <span id="year"></span> MDS ORBIT · Independent digital discovery platform</div></footer>
+<footer><div class="wrap">© <span id="year"></span> MDS ORBIT · Independent digital discovery platform</div><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></footer>
 <script>
 const buttons=[...document.querySelectorAll('[data-filter]')],cards=[...document.querySelectorAll('[data-category]')];
 buttons.forEach(button=>button.addEventListener('click',()=>{buttons.forEach(b=>b.classList.toggle('active',b===button));const filter=button.dataset.filter;cards.forEach(card=>card.hidden=filter!=='All'&&card.dataset.category!==filter)}));
