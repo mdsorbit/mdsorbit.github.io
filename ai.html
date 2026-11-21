@@ -21,8 +21,8 @@ const tools=[
 {name:'ElevenLabs',category:'AI Voice',desc:'Create AI speech, voiceovers and audio experiences with voice tools.',url:'https://elevenlabs.io',type:'Voice / Audio',pricing:'Freemium'},
 {name:'Suno',category:'AI Voice',desc:'Experiment with AI-generated songs and musical ideas.',url:'https://suno.com',type:'Audio Generator',pricing:'Freemium'},
 {name:'DeepL Write',category:'AI Writing',desc:'Get help improving clarity, tone and phrasing in written text.',url:'https://www.deepl.com/write',type:'Writing Assistant',pricing:'Freemium'},
-{name:"DeepSeek",category:"AI Assistants",desc:"An AI assistant for reasoning, research, coding and everyday questions.",url:"https://chat.deepseek.com",type:"Chat / Assistant",pricing:"Freemium"},
-{name:"Mistral Le Chat",category:"AI Assistants",desc:"Mistral’s conversational AI assistant for writing, research and problem solving.",url:"https://chat.mistral.ai",type:"Chat / Assistant",pricing:"Freemium"},
+{name:"DeepSeek",category:"AI Assistants",desc:"An AI assistant for reasoning, research, coding and everyday questions.",url:"https://chat.deepseek.com",type:"Chat / Assistant",pricing:"Freemium",pricing:'Free'},
+{name:"Mistral Le Chat",category:"AI Assistants",desc:"Mistral’s conversational AI assistant for writing, research and problem solving.",url:"https://chat.mistral.ai",type:"Chat / Assistant",pricing:"Freemium",pricing:'Freemium'},
 {name:"Qwen Chat",category:"AI Assistants",desc:"Alibaba’s AI assistant for chat, reasoning, writing and multimodal tasks.",url:"https://chat.qwen.ai",type:"Chat / Assistant",pricing:"Free",pricing:'Free'},
 {name:"Gamma",category:"AI Design",desc:"Create presentations, documents and visual content with AI assistance.",url:"https://gamma.app",type:"Presentations / Design",pricing:"Freemium",pricing:'Freemium'},
 {name:"Krea AI",category:"AI Image",desc:"Create and edit images and visual concepts with generative AI tools.",url:"https://www.krea.ai",type:"Image / Design",pricing:"Freemium",pricing:'Freemium'},
@@ -31,8 +31,8 @@ const tools=[
 {name:"Cursor",category:"AI Coding",desc:"An AI-powered code editor with agent features for building and editing software.",url:"https://cursor.com",type:"AI Coding",pricing:"Freemium",pricing:'Freemium'},
 {name:"Bolt",category:"AI Coding",desc:"Build and prototype websites and apps from natural-language prompts.",url:"https://bolt.new",type:"AI App Builder",pricing:"Freemium",pricing:'Freemium'},
 {name:"Lovable",category:"AI Coding",desc:"Create full-stack web applications from natural-language instructions.",url:"https://lovable.dev",type:"AI App Builder",pricing:"Freemium",pricing:'Freemium'},
-{name:"Consensus",category:"Research",desc:"Search and explore scientific research papers with AI-assisted answers.",url:"https://consensus.app",type:"Research",pricing:"Freemium"},
-{name:"Elicit",category:"Research",desc:"Use AI to find, screen and summarize academic research papers.",url:"https://elicit.com",type:"Research",pricing:"Freemium"}
+{name:"Consensus",category:"Research",desc:"Search and explore scientific research papers with AI-assisted answers.",url:"https://consensus.app",type:"Research",pricing:"Freemium",pricing:'Freemium'},
+{name:"Elicit",category:"Research",desc:"Use AI to find, screen and summarize academic research papers.",url:"https://elicit.com",type:"Research",pricing:"Freemium",pricing:'Freemium'}
 ];
 const categories=['All','AI Assistants','AI Image','AI Video','AI Voice','AI Writing','AI Design','AI Coding','Research','AI Platforms'];let active='All';const $=id=>document.getElementById(id);
 function renderFilters(){$('filters').innerHTML=categories.map(cat=>'<button class="filter '+(cat===active?'active':'')+'" type="button" data-category="'+cat+'">'+cat+'</button>').join('');$('filters').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{active=btn.dataset.category;renderFilters();render()}))}
