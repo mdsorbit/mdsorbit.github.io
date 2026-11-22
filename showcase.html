@@ -29,6 +29,9 @@ footer{border-top:1px solid #ffffff18;margin-top:42px;padding:24px 0;color:#8295
 :where(p,li,.desc,.bodycopy,.hero p,.meta,.sub,.muted,.foot){text-wrap:pretty}
 img{max-width:100%;height:auto}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ORBIT consistency and accessibility */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #8db8ff;outline-offset:3px}img{max-width:100%;height:auto}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style></head>
 <body>
 <header class="wrap"><a class="brand" href="index.html">✳ MDS <span>ORBIT</span></a><a class="back" href="index.html">← Back to discover</a></header>
