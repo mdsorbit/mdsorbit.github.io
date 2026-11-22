@@ -52,6 +52,11 @@ img{max-width:100%;height:auto}
 .toollogo.brand-logo img{display:block;width:29px;height:29px;object-fit:contain}
 .toollogo.brand-logo b{font-size:12px;color:#10213b}
 @media(max-width:950px){#hamb{position:relative!important;z-index:100!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important}#navlinks.open{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}}
+
+/* Homepage tool brand marks: keep the logo visible beside each tool name */
+.tooltop{display:flex!important;align-items:center!important;gap:12px!important}
+.tooltop .toollogo{display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;flex:0 0 42px!important;width:42px!important;height:42px!important}
+.tooltop .toollogo img{display:block!important;visibility:visible!important;opacity:1!important;width:29px!important;height:29px!important;object-fit:contain!important}
 </style></head><body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" onclick="return toggleMobileMenu()" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
 <main class="container">
@@ -128,19 +133,10 @@ const tools=[
 let active='All',saved=[],savedMode=false;
 try{const stored=JSON.parse(localStorage.getItem('orbitSaved')||'[]');if(Array.isArray(stored))saved=stored.filter(x=>typeof x==='string')}catch(e){saved=[];}
 function logo(t){
- const slug={
- 'ChatGPT':'chatgpt','Google Gemini':'googlegemini','Claude':'claude','Perplexity':'perplexity',
- 'Microsoft Copilot':'microsoftcopilot','DeepSeek':'deepseek','Poe':'poe','Hugging Face':'huggingface',
- 'NotebookLM':'googlenotebooklm','Character.AI':'characterai','Mistral Le Chat':'mistralai',
- 'OpenRouter':'openrouter','Canva':'canva','Figma':'figma','Photopea':'photopea','Adobe Express':'adobeexpress',
- 'remove.bg':'removebg','iLovePDF':'ilovepdf','Notion':'notion','Google Translate':'googletranslate',
- 'DeepL Translate':'deepl','TinyWow':'tinywow','Khan Academy':'khanacademy','Coursera':'coursera',
- 'Duolingo':'duolingo','edX':'edx','YouTube':'youtube','Spotify':'spotify'
- };
- const brand=slug[t.name];
- const fallback='<b>'+String(t.name||'OR').slice(0,2).toUpperCase()+'</b>';
- const src='https://www.google.com/s2/favicons?domain='+encodeURIComponent(t.domain||new URL(t.url).hostname)+'&sz=128';
- return '<span class="toollogo brand-logo">'+(brand?'<img loading="lazy" decoding="async" src="https://cdn.simpleicons.org/'+brand+'" alt="" onerror="this.onerror=null;this.src=\''+src+'\';this.onerror=function(){this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'beforeend\',\''+fallback+'\')}">':'<img loading="lazy" decoding="async" src="'+src+'" alt="" onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'beforeend\',\''+fallback+'\')">')+'</span>';
+ const host=(t.domain||(()=>{try{return new URL(t.url).hostname}catch(e){return ''}})()).replace(/^www\./,'');
+ const fallback='<b>'+String(t.name||'AI').slice(0,2).toUpperCase()+'</b>';
+ const src='https://www.google.com/s2/favicons?domain='+encodeURIComponent(host)+'&sz=128';
+ return '<span class="toollogo brand-logo"><img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+src+'" alt="'+String(t.name||'Tool').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+' logo" onerror="this.onerror=null;this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'beforeend\',\''+fallback+'\')"></span>';
 }
 function card(t){let isSaved=saved.includes(t.name);return '<article class="tool"><div class="tooltop">'+logo(t)+'<div><div class="toolname">'+t.name+'</div><div class="toolcat">'+t.cat+'</div></div></div><p>'+t.desc+'</p><div class="toolbottom"><a class="visit" href="resource.html?tool='+encodeURIComponent(t.name)+'">Details ↗</a><div class="toolactions"><a class="visit" href="'+t.url+'" target="_blank" rel="noopener noreferrer">Official site ↗</a><span class="tag">'+(t.pricing||t.badge||'Explore')+'</span><button class="savebtn '+(isSaved?'saved':'')+'" aria-label="'+(isSaved?'Remove saved item':'Save item')+'" title="'+(isSaved?'Remove from saved':'Save for later')+'" onclick="toggleSave(\''+t.name+'\')">'+(isSaved?'♥':'♡')+'</button></div></div></article>'}
 const hubPages=[
