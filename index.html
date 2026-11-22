@@ -119,23 +119,35 @@ function hubCard(p){return '<article class="tool"><div class="tooltop"><span cla
 let globalSearchIndex=[];
 const searchPages=['ai.html','apps.html','learning.html','category.html','resource.html','document-tools.html','office-tools.html','image-tools.html','everyday.html','showcase.html','prompts.html'];
 async function buildGlobalSearchIndex(){
- await Promise.allSettled(searchPages.map(async page=>{
-  const response=await fetch(page);if(!response.ok)return;
+ const pages=await Promise.allSettled(searchPages.map(async page=>{
+  const response=await fetch(page,{cache:'no-cache'});
+  if(!response.ok)throw new Error('Could not load '+page);
   const doc=new DOMParser().parseFromString(await response.text(),'text/html');
-  const seen=new Set();
+  const entries=[];
   doc.querySelectorAll('article').forEach(el=>{
-   const a=el.querySelector('a[href]');if(!a)return;
-   const href=a.getAttribute('href');if(!href||href.startsWith('#')||/^https?:/i.test(href))return;
-   const title=(el.querySelector('h2,h3,.toolname,.name')?.textContent||a.textContent||'').trim();
-   const key=title+'|'+href;if(!title||seen.has(key))return;seen.add(key);
-   globalSearchIndex.push({title,body:el.textContent.replace(/\s+/g,' ').trim(),page,url:new URL(href,location.href).href});
+   const a=el.querySelector('a[href]');
+   if(!a)return;
+   const href=a.getAttribute('href');
+   if(!href||href.startsWith('#')||/^javascript:/i.test(href))return;
+   const title=(el.querySelector('h1,h2,h3,h4,.toolname,.name')?.textContent||a.textContent||'').trim();
+   if(!title)return;
+   let url;
+   try{url=new URL(href,location.href).href}catch(e){return}
+   entries.push({title,body:el.textContent.replace(/\\s+/g,' ').trim(),page,url});
   });
   doc.querySelectorAll('a[href]').forEach(a=>{
    const href=a.getAttribute('href'),title=a.textContent.trim();
-   if(title&&href&&!href.startsWith('#')&&!/^https?:/i.test(href)&&/\.(html|pdf|docx?|xlsx?|pptx?|csv|txt|zip)$/i.test(href))
-    globalSearchIndex.push({title,body:title,page,url:new URL(href,location.href).href});
+   if(!title||!href||href.startsWith('#')||/^javascript:/i.test(href))return;
+   if(!/\\.(html|pdf|docx?|xlsx?|pptx?|csv|txt|zip)(?:[?#].*)?$/i.test(href))return;
+   let url;try{url=new URL(href,location.href).href}catch(e){return}
+   entries.push({title,body:title,page,url});
   });
+  return entries;
  }));
+ globalSearchIndex=pages.flatMap(x=>x.status==='fulfilled'?x.value:[]);
+ const unique=new Map();
+ globalSearchIndex.forEach(x=>unique.set(x.title.toLowerCase()+'|'+x.url,x));
+ globalSearchIndex=[...unique.values()];
 }
 function render(){
  let q=document.getElementById('searchInput').value.trim().toLowerCase();
