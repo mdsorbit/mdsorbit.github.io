@@ -127,7 +127,7 @@ const hubPages=[
 function hubCard(p){return '<article class="tool"><div class="tooltop"><span class="toollogo"><b>✳</b></span><div><div class="toolname">'+p.name+'</div><div class="toolcat">MDS ORBIT · '+p.cat+'</div></div></div><p>'+p.desc+'</p><div class="toolbottom"><a class="visit" href="'+p.url+'">Open section ↗</a></div></article>'}
 let globalSearchIndex=[],searchReady=false,searchFailures=[];
 const searchPages=['ai.html','apps.html','learning.html','category.html','resource.html','document-tools.html','office-tools.html','image-tools.html','everyday.html','showcase.html','prompts.html','guides.html','about.html','contact.html','privacy.html','terms.html'];
-function cleanText(value){return (value||'').replace(/\\s+/g,' ').trim()}
+function cleanText(value){return (value||'').replace(/\s+/g,' ').trim()}
 function safeSearchUrl(href,page){
  try{const u=new URL(href,location.href);if(!['http:','https:'].includes(u.protocol))return '';return u.href}catch(e){return ''}
 }
@@ -172,7 +172,7 @@ function searchCard(x){
 }
 function render(){
  const input=document.getElementById('searchInput'),q=input.value.trim().toLowerCase();
- const tokens=q.split(/\\s+/).filter(Boolean);
+ const tokens=q.split(/\s+/).filter(Boolean);
  let matches=globalSearchIndex.filter(x=>{
   if(savedMode&&!saved.includes(x.title))return false;
   if(!tokens.length)return !savedMode;
