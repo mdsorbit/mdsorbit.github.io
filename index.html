@@ -116,7 +116,39 @@ const hubPages=[
 {name:'Design Showcase',cat:'Platform',desc:'Explore visual concepts and interface inspiration.',url:'showcase.html',keys:'design showcase inspiration ui interface'}
 ];
 function hubCard(p){return '<article class="tool"><div class="tooltop"><span class="toollogo"><b>✳</b></span><div><div class="toolname">'+p.name+'</div><div class="toolcat">MDS ORBIT · '+p.cat+'</div></div></div><p>'+p.desc+'</p><div class="toolbottom"><a class="visit" href="'+p.url+'">Open section ↗</a></div></article>'}
-function render(){let q=document.getElementById('searchInput').value.trim().toLowerCase();let list=tools.filter(t=>(active==='All'||t.cat===active)&&(!savedMode||saved.includes(t.name))&&(!q||(t.name+' '+t.cat+' '+t.desc+' '+(t.pricing||'')).toLowerCase().includes(q)));let hubs=(!savedMode&&(!q||q.length>0))?hubPages.filter(p=>q&&(p.name+' '+p.desc+' '+p.keys).toLowerCase().includes(q)):[];let html=list.map(card).join('')+hubs.map(hubCard).join('');document.getElementById('toolGrid').innerHTML=html||'<div class="empty">No matching tools or sections found. Try another search or category.</div>';const resultCount=document.getElementById('resultCount');if(resultCount)resultCount.textContent=savedMode?list.length+' saved resources':list.length+hubs.length+' matching results · '+tools.length+' directory resources';document.getElementById('savedCount').textContent=saved.length;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===active))}
+let globalSearchIndex=[];
+const searchPages=['ai.html','apps.html','learning.html','category.html','resource.html','document-tools.html','office-tools.html','image-tools.html','everyday.html','showcase.html','prompts.html'];
+async function buildGlobalSearchIndex(){
+ await Promise.allSettled(searchPages.map(async page=>{
+  const response=await fetch(page);if(!response.ok)return;
+  const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+  const seen=new Set();
+  doc.querySelectorAll('article').forEach(el=>{
+   const a=el.querySelector('a[href]');if(!a)return;
+   const href=a.getAttribute('href');if(!href||href.startsWith('#')||/^https?:/i.test(href))return;
+   const title=(el.querySelector('h2,h3,.toolname,.name')?.textContent||a.textContent||'').trim();
+   const key=title+'|'+href;if(!title||seen.has(key))return;seen.add(key);
+   globalSearchIndex.push({title,body:el.textContent.replace(/\s+/g,' ').trim(),page,url:new URL(href,location.href).href});
+  });
+  doc.querySelectorAll('a[href]').forEach(a=>{
+   const href=a.getAttribute('href'),title=a.textContent.trim();
+   if(title&&href&&!href.startsWith('#')&&!/^https?:/i.test(href)&&/\.(html|pdf|docx?|xlsx?|pptx?|csv|txt|zip)$/i.test(href))
+    globalSearchIndex.push({title,body:title,page,url:new URL(href,location.href).href});
+  });
+ }));
+}
+function render(){
+ let q=document.getElementById('searchInput').value.trim().toLowerCase();
+ let list=tools.filter(t=>(active==='All'||t.cat===active)&&(!savedMode||saved.includes(t.name))&&(!q||(t.name+' '+t.cat+' '+t.desc+' '+(t.pricing||'')).toLowerCase().includes(q)));
+ let hubs=(!savedMode&&q)?hubPages.filter(p=>(p.name+' '+p.desc+' '+p.keys).toLowerCase().includes(q)):[];
+ let found=(!savedMode&&q.length>1)?globalSearchIndex.filter(x=>(x.title+' '+x.body+' '+x.page).toLowerCase().includes(q)).slice(0,40):[];
+ let extra=found.map(x=>'<article class="tool"><div class="tooltop"><span class="toollogo"><b>↗</b></span><div><div class="toolname">'+x.title.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))+'</div><div class="toolcat">Found in '+x.page.replace('.html','').replace(/-/g,' ')+'</div></div></div><p>Matching resource inside MDS ORBIT.</p><div class="toolbottom"><a class="visit" href="'+x.url+'">Open here ↗</a></div></article>').join('');
+ let html=list.map(card).join('')+hubs.map(hubCard).join('')+extra;
+ document.getElementById('toolGrid').innerHTML=html||'<div class="empty">No matching resources found. Try another keyword.</div>';
+ const resultCount=document.getElementById('resultCount');if(resultCount)resultCount.textContent=savedMode?list.length+' saved resources':list.length+hubs.length+found.length+' matching results · all ORBIT hubs';
+ document.getElementById('savedCount').textContent=saved.length;
+ document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===active))
+}
 function setFilter(c){active=c;savedMode=false;render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.filter)));
 document.getElementById('searchInput').addEventListener('input',render);document.getElementById('searchBtn').addEventListener('click',()=>{render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})});
@@ -124,5 +156,5 @@ document.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',
 function toggleSave(name){saved=saved.includes(name)?saved.filter(x=>x!==name):[...saved,name];try{localStorage.setItem('orbitSaved',JSON.stringify(saved))}catch(e){}render();document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('')}
 function showSaved(){savedMode=!savedMode;active='All';document.getElementById('searchInput').value='';const toggle=document.getElementById('savedToggle');toggle.setAttribute('aria-pressed',String(savedMode));toggle.innerHTML=(savedMode?'↩ All tools':'♡ Saved')+' <span id="savedCount">'+saved.length+'</span>';render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
 const menuButton=document.getElementById('hamb'),menuPanel=document.getElementById('navlinks');function closeMobileMenu(){menuPanel.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','Open navigation menu')}menuButton.addEventListener('click',()=>{const isOpen=menuPanel.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(isOpen));menuButton.setAttribute('aria-label',isOpen?'Close navigation menu':'Open navigation menu')});document.querySelectorAll('#navlinks a').forEach(a=>a.addEventListener('click',closeMobileMenu));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu()});
-document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('');document.getElementById('year').textContent=new Date().getFullYear();render();
+document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('');document.getElementById('year').textContent=new Date().getFullYear();render();buildGlobalSearchIndex().then(render);
 </script></body></html>
