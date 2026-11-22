@@ -276,7 +276,7 @@ document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join(
    let u;try{u=new URL(x.url,location.href)}catch(e){return ''}
    if(!['https:','http:'].includes(u.protocol))return '';
    const ext=u.origin!==location.origin;
-   return '<article class="tool search-result"><div class="toolname">'+escape(x.title)+'</div><div class="toolcat">'+escape(x.section)+'</div><p>'+escape((x.body||'').slice(0,180))+'</p><div class="toolbottom"><a class="visit" href="'+escape(u.href)+'" '+(ext?'target="_blank" rel="noopener noreferrer"':'')+'>'+(ext?'Official site':'Open in ORBIT')+' ↗</a></div></article>';
+   return '<article class="tool search-result"><div class="tooltop">'+logo({name:x.title,domain:u.hostname,url:u.href,cat:x.section})+'<div><div class="toolname">'+escape(x.title)+'</div><div class="toolcat">'+escape(x.section)+'</div></div></div><p>'+escape((x.body||'').slice(0,180))+'</p><div class="toolbottom"><a class="visit" href="'+escape(u.href)+'" '+(ext?'target="_blank" rel="noopener noreferrer"':'')+'>'+(ext?'Official site':'Open in ORBIT')+' ↗</a></div></article>';
   }).join('')||'<div class="empty">'+(ready?'No matching results. Try another word.':'Search tools are loading…')+'</div>';
   const count=document.getElementById('resultCount');if(count)count.textContent=found.length+' results';
  }
