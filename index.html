@@ -40,6 +40,12 @@ img{max-width:100%;height:auto}
 /* Reliable mobile menu visibility */
 @media(max-width:950px){.navlinks.open{display:flex!important}}
 @media(max-width:650px){.navlinks{display:none!important}.navlinks.open{display:flex!important;visibility:visible!important;opacity:1!important}.navright .hamb{display:flex!important;visibility:visible!important;opacity:1!important}}
+
+/* Final mobile menu and SVG tool-icon repair */
+.toollogo.tool-svg-icon{display:grid;place-items:center;background:linear-gradient(145deg,#1d3b65,#142541);color:#a9caff;flex:0 0 42px}
+.toollogo.tool-svg-icon svg{display:block;width:24px;height:24px;max-width:none}
+@media(max-width:950px){.navlinks.open{display:flex!important}}
+@media(max-width:650px){.navright .hamb{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:80!important;min-width:82px;min-height:42px;justify-content:center}.navlinks{display:none!important;visibility:hidden;opacity:0;pointer-events:none;position:absolute!important;top:calc(100% + 1px)!important;left:0!important;right:0!important;z-index:79!important;background:#0b1526!important;flex-direction:column!important;align-items:stretch!important}.navlinks.open{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}}
 </style></head><body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" onclick="return toggleMobileMenu()" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
 <main class="container">
@@ -116,9 +122,16 @@ const tools=[
 let active='All',saved=[],savedMode=false;
 try{const stored=JSON.parse(localStorage.getItem('orbitSaved')||'[]');if(Array.isArray(stored))saved=stored.filter(x=>typeof x==='string')}catch(e){saved=[];}
 function logo(t){
- const paths={AI:'<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/><path d="M10 12h4"/>',Design:'<path d="m4 20 4.5-1 10-10a2.8 2.8 0 0 0-4-4l-10 10L4 20Z"/><path d="m13 7 4 4"/>',Productivity:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',Learning:'<path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c4 3 8 3 12 0v-5m4-2v7"/>',Entertainment:'<path d="m9 6 10 6-10 6V6Z"/><circle cx="12" cy="12" r="10"/>',default:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/>'};
- const path=paths[t.cat]||paths.default;
- return '<span class="toollogo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg></span>';
+ const paths={
+ AI:'<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/>',
+ Design:'<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1.7-3.1 1.8 1.8 0 0 1 1.5-2.8H18a3 3 0 0 0 3-3c0-5-4-9-9-9Z"/><circle cx="7.5" cy="10" r=".8"/><circle cx="11" cy="7" r=".8"/><circle cx="16" cy="9" r=".8"/>',
+ Productivity:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/>',
+ Learning:'<path d="m3 8 9-5 9 5-9 5-9-5Z"/><path d="M7 10v5c3 3 7 3 10 0v-5m5-2v7"/>',
+ Entertainment:'<path d="m9 5 10 7-10 7V5Z"/>',
+ Platform:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/>'
+ };
+ const key=paths[t.cat]?t.cat:'Platform';
+ return '<span class="toollogo tool-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+paths[key]+'</svg></span>';
 }
 function card(t){let isSaved=saved.includes(t.name);return '<article class="tool"><div class="tooltop">'+logo(t)+'<div><div class="toolname">'+t.name+'</div><div class="toolcat">'+t.cat+'</div></div></div><p>'+t.desc+'</p><div class="toolbottom"><a class="visit" href="resource.html?tool='+encodeURIComponent(t.name)+'">Details ↗</a><div class="toolactions"><a class="visit" href="'+t.url+'" target="_blank" rel="noopener noreferrer">Official site ↗</a><span class="tag">'+(t.pricing||t.badge||'Explore')+'</span><button class="savebtn '+(isSaved?'saved':'')+'" aria-label="'+(isSaved?'Remove saved item':'Save item')+'" title="'+(isSaved?'Remove from saved':'Save for later')+'" onclick="toggleSave(\''+t.name+'\')">'+(isSaved?'♥':'♡')+'</button></div></div></article>'}
 const hubPages=[
@@ -278,4 +291,6 @@ document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join(
  })).then(()=>{const seen=new Set();all=all.filter(x=>{const k=x.title.toLowerCase()+'|'+x.url;if(seen.has(k))return false;seen.add(k);return true});ready=true;draw()}).catch(()=>{ready=true;draw()});
 })();
 
+
+(function(){const b=document.getElementById('hamb'),p=document.getElementById('navlinks');if(!b||!p)return;b.onclick=function(e){e.preventDefault();e.stopPropagation();const open=!p.classList.contains('open');p.classList.toggle('open',open);b.setAttribute('aria-expanded',open?'true':'false');};})();
 </script></body></html>
