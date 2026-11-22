@@ -92,7 +92,5 @@ $('promptModal').addEventListener('click',e=>{if(e.target===$('promptModal'))clo
 $('copyModalPrompt').addEventListener('click',async()=>copyPromptText(selectedPrompt,$('copyModalPrompt')));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('promptModal').classList.contains('open'))closePromptModal();});
 $('search').addEventListener('input',render);$('sort').addEventListener('change',render);$('year').textContent=new Date().getFullYear();
-
-$('search').addEventListener('input',render);$('sort').addEventListener('change',render);$('year').textContent=new Date().getFullYear();
 fetch(DATA_URL,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Could not load prompt data');return r.json();}).then(data=>{prompts=Array.isArray(data)?data:[];if(!prompts.length)throw new Error('No prompt entries found');makeFilters();render();}).catch(err=>{$('count').textContent='Prompt library could not be loaded';$('grid').innerHTML='<div class="empty error">The live prompt dataset could not be reached. Check your connection and try again.<br><small>'+safeText(err.message)+'</small></div>';});
 </script></body></html>
