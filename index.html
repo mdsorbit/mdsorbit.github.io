@@ -39,9 +39,9 @@ img{max-width:100%;height:auto}
 
 /* Reliable mobile menu visibility */
 @media(max-width:950px){.navlinks.open{display:flex!important}}
-@media(max-width:650px){.navlinks{display:none!important}.navlinks.open{display:flex!important}.navright .hamb{display:flex!important}}
+@media(max-width:650px){.navlinks{display:none!important}.navlinks.open{display:flex!important;visibility:visible!important;opacity:1!important}.navright .hamb{display:flex!important;visibility:visible!important;opacity:1!important}}
 </style></head><body>
-<header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
+<header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" onclick="return toggleMobileMenu()" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
 <main class="container">
 <section class="hero"><div class="announce"><i></i> THE DIGITAL UNIVERSE, DISCOVERED</div><h1>Everything digital.<br><span>One place to explore.</span></h1><p>Discover powerful AI tools, useful websites, creative apps, learning resources and digital experiences — carefully organised for curious minds.</p>
 <div class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input id="searchInput" placeholder="Search tools, apps, websites and more..." autocomplete="off"><button id="searchBtn">Search</button></div><div class="quicklinks">Popular: <button data-query="AI">AI assistants</button><button data-query="design">Design</button><button data-query="video">Video tools</button><button data-query="productivity">Productivity</button><button data-query="Free">Free</button><button data-query="Freemium">Freemium</button><button data-query="Paid">Paid</button><a class="pill" href="contact.html">Suggest a tool ↗</a></div></section>
@@ -115,7 +115,11 @@ const tools=[
 ];
 let active='All',saved=[],savedMode=false;
 try{const stored=JSON.parse(localStorage.getItem('orbitSaved')||'[]');if(Array.isArray(stored))saved=stored.filter(x=>typeof x==='string')}catch(e){saved=[];}
-function logo(t){return '<span class="toollogo"><img loading="lazy" decoding="async" src="https://www.google.com/s2/favicons?domain='+t.domain+'&sz=64" alt="" onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'beforeend\',\'<b>'+t.name.slice(0,2).toUpperCase()+'</b>\')"></span>'}
+function logo(t){
+ const paths={AI:'<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/><path d="M10 12h4"/>',Design:'<path d="m4 20 4.5-1 10-10a2.8 2.8 0 0 0-4-4l-10 10L4 20Z"/><path d="m13 7 4 4"/>',Productivity:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',Learning:'<path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c4 3 8 3 12 0v-5m4-2v7"/>',Entertainment:'<path d="m9 6 10 6-10 6V6Z"/><circle cx="12" cy="12" r="10"/>',default:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/>'};
+ const path=paths[t.cat]||paths.default;
+ return '<span class="toollogo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg></span>';
+}
 function card(t){let isSaved=saved.includes(t.name);return '<article class="tool"><div class="tooltop">'+logo(t)+'<div><div class="toolname">'+t.name+'</div><div class="toolcat">'+t.cat+'</div></div></div><p>'+t.desc+'</p><div class="toolbottom"><a class="visit" href="resource.html?tool='+encodeURIComponent(t.name)+'">Details ↗</a><div class="toolactions"><a class="visit" href="'+t.url+'" target="_blank" rel="noopener noreferrer">Official site ↗</a><span class="tag">'+(t.pricing||t.badge||'Explore')+'</span><button class="savebtn '+(isSaved?'saved':'')+'" aria-label="'+(isSaved?'Remove saved item':'Save item')+'" title="'+(isSaved?'Remove from saved':'Save for later')+'" onclick="toggleSave(\''+t.name+'\')">'+(isSaved?'♥':'♡')+'</button></div></div></article>'}
 const hubPages=[
 {name:'AI Universe',cat:'Platform',desc:'Open a category-based directory of AI assistants, image and video generators, voice tools, writing helpers and research services.',url:'ai.html',keys:'artificial intelligence chatbot image video voice writing research'},
@@ -204,12 +208,23 @@ document.getElementById('searchInput').addEventListener('input',()=>{active='All
 document.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('searchInput').value=b.dataset.query;active='All';render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}));
 function toggleSave(name){saved=saved.includes(name)?saved.filter(x=>x!==name):[...saved,name];try{localStorage.setItem('orbitSaved',JSON.stringify(saved))}catch(e){}render();document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('')}
 function showSaved(){savedMode=!savedMode;active='All';document.getElementById('searchInput').value='';const toggle=document.getElementById('savedToggle');toggle.setAttribute('aria-pressed',String(savedMode));toggle.innerHTML=(savedMode?'↩ All tools':'♡ Saved')+' <span id="savedCount">'+saved.length+'</span>';render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
+function toggleMobileMenu(){
+ const panel=document.getElementById('navlinks'),button=document.getElementById('hamb');
+ if(!panel||!button)return false;
+ const opened=panel.classList.toggle('open');
+ button.setAttribute('aria-expanded',String(opened));
+ button.setAttribute('aria-label',opened?'Close navigation menu':'Open navigation menu');
+ return false;
+}
+function closeMobileMenu(){
+ const panel=document.getElementById('navlinks'),button=document.getElementById('hamb');
+ if(panel)panel.classList.remove('open');
+ if(button){button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Open navigation menu')}
+}
 const menuButton=document.getElementById('hamb'),menuPanel=document.getElementById('navlinks');
-function closeMobileMenu(){if(!menuPanel||!menuButton)return;menuPanel.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','Open navigation menu')}
 if(menuButton&&menuPanel){
- menuButton.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();const opened=menuPanel.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(opened));menuButton.setAttribute('aria-label',opened?'Close navigation menu':'Open navigation menu')});
+ menuButton.onclick=function(event){if(event){event.preventDefault();event.stopPropagation()}return toggleMobileMenu()};
  menuPanel.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMobileMenu));
- document.addEventListener('click',e=>{if(!menuPanel.contains(e.target)&&!menuButton.contains(e.target))closeMobileMenu()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu()});
 }
 
