@@ -214,4 +214,53 @@ if(menuButton&&menuPanel){
 }
 
 document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('');document.getElementById('year').textContent=new Date().getFullYear();render();buildGlobalSearchIndex().then(render).catch(()=>{searchReady=true;render()});
+
+/* Reliable mobile menu + search recovery */
+(function(){
+ const menu=document.getElementById('hamb'),panel=document.getElementById('navlinks');
+ if(menu&&panel){
+  menu.onclick=function(ev){
+   ev.preventDefault();
+   const open=!panel.classList.contains('open');
+   panel.classList.toggle('open',open);
+   menu.setAttribute('aria-expanded',String(open));
+   menu.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu');
+  };
+  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',function(){
+   panel.classList.remove('open');menu.setAttribute('aria-expanded','false');
+  }));
+ }
+ const input=document.getElementById('searchInput'),grid=document.getElementById('toolGrid');
+ if(!input||!grid)return;
+ const base=Array.isArray(tools)?tools.map(t=>({title:t.name,body:[t.desc,t.cat,t.pricing].filter(Boolean).join(' '),url:t.url,section:t.cat||'Tool'})):[];
+ const hubs=Array.isArray(hubPages)?hubPages.map(p=>({title:p.name,body:[p.desc,p.keys,p.cat].filter(Boolean).join(' '),url:p.url,section:'ORBIT Hub'})):[];
+ let all=[...base,...hubs],ready=false;
+ const escape=s=>String(s||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ function draw(){
+  const q=input.value.trim().toLowerCase(),words=q.split(/\s+/).filter(Boolean);
+  const found=all.filter(x=>!words.length||words.every(w=>(x.title+' '+x.body+' '+x.section).toLowerCase().includes(w)));
+  grid.innerHTML=found.slice(0,80).map(x=>{
+   let u;try{u=new URL(x.url,location.href)}catch(e){return ''}
+   if(!['https:','http:'].includes(u.protocol))return '';
+   const ext=u.origin!==location.origin;
+   return '<article class="tool search-result"><div class="toolname">'+escape(x.title)+'</div><div class="toolcat">'+escape(x.section)+'</div><p>'+escape((x.body||'').slice(0,180))+'</p><div class="toolbottom"><a class="visit" href="'+escape(u.href)+'" '+(ext?'target="_blank" rel="noopener noreferrer"':'')+'>'+(ext?'Official site':'Open in ORBIT')+' ↗</a></div></article>';
+  }).join('')||'<div class="empty">'+(ready?'No matching results. Try another word.':'Search tools are loading…')+'</div>';
+  const count=document.getElementById('resultCount');if(count)count.textContent=found.length+' results';
+ }
+ input.oninput=draw;
+ const btn=document.getElementById('searchBtn');if(btn)btn.onclick=function(){draw();document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})};
+ document.querySelectorAll('[data-query]').forEach(b=>b.onclick=function(){input.value=b.getAttribute('data-query')||'';draw();document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})});
+ draw();
+ Promise.allSettled(searchPages.map(async page=>{
+  const response=await fetch(new URL(page,location.href).href);
+  if(!response.ok)throw new Error(page);
+  const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+  doc.querySelectorAll('article,.tool-card,.resource-card,.app-card,.prompt-card,[data-search-item]').forEach(el=>{
+   const a=el.querySelector('a[href]');if(!a)return;
+   const title=(el.querySelector('h1,h2,h3,h4,.toolname,.name,.title')?.textContent||a.textContent||'').trim();
+   if(title)all.push({title,body:(el.textContent||'').trim(),url:new URL(a.getAttribute('href'),new URL(page,location.href)).href,section:page.replace('.html','')});
+  });
+ })).then(()=>{const seen=new Set();all=all.filter(x=>{const k=x.title.toLowerCase()+'|'+x.url;if(seen.has(k))return false;seen.add(k);return true});ready=true;draw()}).catch(()=>{ready=true;draw()});
+})();
+
 </script></body></html>
