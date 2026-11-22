@@ -32,7 +32,7 @@ header{height:68px;border-bottom:1px solid #ffffff18;display:flex;align-items:ce
 <script>
 const DATA_URL='https://raw.githubusercontent.com/superdesigndev/superdesign-prompts/main/prompts.json';
 const RAW_BASE='https://raw.githubusercontent.com/superdesigndev/superdesign-prompts/main/';
-let prompts=[],active='All';
+let prompts=[],active='All',selectedPrompt='';
 const $=id=>document.getElementById(id);
 function safeText(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function categoryKey(v){return String(v||'').toLowerCase();}
@@ -53,16 +53,46 @@ function render(){
  $('grid').innerHTML=list.length?list.map(p=>{
  const preview=p.preview?RAW_BASE+p.preview:'';
  const score=p.visual_score==null?'':safeText(p.visual_score)+'/10 visual';
- const url=p.try_url||('https://superdesign.dev/library/'+p.slug);
  return '<article class="card"><div class="visualwrap"><img class="visual" decoding="async" src="'+safeText(preview)+'" alt="'+safeText(p.title)+' visual preview" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.style.background=\'linear-gradient(135deg,#142744,#263d60)\';"><span class="score">'+(score||'Visual prompt')+'</span></div><div class="cardbody"><div class="chips"><span class="chip">'+safeText(p.category)+'</span><span class="chip">'+safeText(p.industry||'General')+'</span></div><h2>'+safeText(p.title)+'</h2><p class="desc">'+safeText(p.description||'Full visual design prompt and implementation guidance.')+'</p><div class="stats">'+safeText(p.copyCount??0)+' copies · '+safeText(p.tryCount??0)+' runs · '+safeText(p.author||'Community')+'</div><div class="actions"><button class="btn view" data-view-slug="'+safeText(p.slug)+'">Read prompt</button><button class="btn copy" data-slug="'+safeText(p.slug)+'">Copy full prompt</button></div></div></article>';
  }).join(''):'<div class="empty">No prompts found. Try another search or category.</div>';
- let selectedPrompt='';
- $('grid').querySelectorAll('[data-view-slug]').forEach(b=>b.addEventListener('click',()=>{const p=prompts.find(x=>x.slug===b.dataset.viewSlug);if(!p)return;selectedPrompt=p.prompt||'';$('promptTitle').textContent=p.title;$('promptText').textContent=selectedPrompt;$('promptModal').classList.add('open');}));
- $('closePrompt').addEventListener('click',()=>$('promptModal').classList.remove('open'));
- $('promptModal').addEventListener('click',e=>{if(e.target===$('promptModal'))$('promptModal').classList.remove('open')});
- $('copyModalPrompt').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(selectedPrompt);}catch(e){const t=document.createElement('textarea');t.value=selectedPrompt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}$('copyModalPrompt').textContent='Copied ✓';setTimeout(()=>$('copyModalPrompt').textContent='Copy full prompt',1600);});
- $('grid').querySelectorAll('[data-slug]').forEach(b=>b.addEventListener('click',async()=>{const p=prompts.find(x=>x.slug===b.dataset.slug);try{await navigator.clipboard.writeText(p.prompt||'');b.textContent='Copied ✓';}catch(e){const t=document.createElement('textarea');t.value=p.prompt||'';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();b.textContent='Copied ✓';}setTimeout(()=>b.textContent='Copy full prompt',1600);}));
+
 }
+$('grid').addEventListener('click',async e=>{
+ const view=e.target.closest('[data-view-slug]');
+ const copy=e.target.closest('[data-slug]');
+ if(view){
+  const p=prompts.find(x=>x.slug===view.dataset.viewSlug);if(!p)return;
+  selectedPrompt=String(p.prompt||'');
+  $('promptTitle').textContent=p.title||'Prompt details';
+  $('promptText').textContent=selectedPrompt||'Full prompt text is not available for this item.';
+  $('promptModal').classList.add('open');
+  $('closePrompt').focus();
+ }
+ if(copy){
+  const p=prompts.find(x=>x.slug===copy.dataset.slug);if(!p)return;
+  await copyPromptText(String(p.prompt||''),copy);
+ }
+});
+async function copyPromptText(value,button){
+ if(!value){button.textContent='Prompt unavailable';return;}
+ try{
+  if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(value);
+  else throw new Error('Clipboard API unavailable');
+ }catch(e){
+  const t=document.createElement('textarea');t.value=value;t.setAttribute('readonly','');
+  t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+  const ok=document.execCommand('copy');t.remove();if(!ok){button.textContent='Copy failed';return;}
+ }
+ const original=button.textContent;button.textContent='Copied ✓';
+ window.setTimeout(()=>button.textContent=original,1600);
+}
+function closePromptModal(){$('promptModal').classList.remove('open');}
+$('closePrompt').addEventListener('click',closePromptModal);
+$('promptModal').addEventListener('click',e=>{if(e.target===$('promptModal'))closePromptModal();});
+$('copyModalPrompt').addEventListener('click',async()=>copyPromptText(selectedPrompt,$('copyModalPrompt')));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('promptModal').classList.contains('open'))closePromptModal();});
+$('search').addEventListener('input',render);$('sort').addEventListener('change',render);$('year').textContent=new Date().getFullYear();
+
 $('search').addEventListener('input',render);$('sort').addEventListener('change',render);$('year').textContent=new Date().getFullYear();
 fetch(DATA_URL,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Could not load prompt data');return r.json();}).then(data=>{prompts=Array.isArray(data)?data:[];if(!prompts.length)throw new Error('No prompt entries found');makeFilters();render();}).catch(err=>{$('count').textContent='Prompt library could not be loaded';$('grid').innerHTML='<div class="empty error">The live prompt dataset could not be reached. Check your connection and try again.<br><small>'+safeText(err.message)+'</small></div>';});
 </script></body></html>
