@@ -36,6 +36,10 @@ img{max-width:100%;height:auto}
 
 /* ORBIT consistency and accessibility */
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #8db8ff;outline-offset:3px}img{max-width:100%;height:auto}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Reliable mobile menu visibility */
+@media(max-width:950px){.navlinks.open{display:flex!important}}
+@media(max-width:650px){.navlinks{display:none!important}.navlinks.open{display:flex!important}.navright .hamb{display:flex!important}}
 </style></head><body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
 <main class="container">
@@ -174,23 +178,25 @@ function searchCard(x){
  return '<article class="tool search-result"><div class="tooltop"><span class="toollogo"><b>'+escapeSearchHtml((x.title||'OR').slice(0,2).toUpperCase())+'</b></span><div><div class="toolname">'+title+'</div><div class="toolcat">'+type+' · '+page+'</div></div></div><p>'+body+'</p><div class="toolbottom"><a class="visit" href="'+escapeSearchHtml(url)+'" '+(external?'target="_blank" rel="noopener noreferrer"':'')+'>'+(external?'Official site':'Open in ORBIT')+' ↗</a></div></article>';
 }
 function render(){
- const input=document.getElementById('searchInput'),q=input.value.trim().toLowerCase();
+ const input=document.getElementById('searchInput');
+ const q=(input&&input.value?input.value:'').trim().toLowerCase();
  const tokens=q.split(/\s+/).filter(Boolean);
- let matches=globalSearchIndex.filter(x=>{
+ const source=globalSearchIndex.length?globalSearchIndex:[
+  ...tools.map(t=>({title:t.name,body:[t.desc,t.cat,t.pricing].filter(Boolean).join(' '),page:'Discover Digital Tools',url:t.url,type:'Tool'})),
+  ...hubPages.map(p=>({title:p.name,body:[p.desc,p.keys].filter(Boolean).join(' '),page:'ORBIT Hubs',url:p.url,type:'Hub'}))
+ ];
+ let matches=source.filter(x=>{
   if(savedMode&&!saved.includes(x.title))return false;
-  if(!tokens.length)return !savedMode;
   const hay=(x.title+' '+x.body+' '+x.page+' '+x.type).toLowerCase();
-  return tokens.every(token=>hay.includes(token));
+  return !tokens.length?!savedMode:tokens.every(t=>hay.includes(t));
  });
- if(!q&&!savedMode)matches=tools.map(t=>({title:t.name,body:t.desc+' '+t.cat+' '+(t.pricing||''),page:'Discover Digital Tools',url:t.url,type:'Tool'}));
- if(savedMode)matches=globalSearchIndex.filter(x=>saved.includes(x.title));
- const filtered=matches.slice(0,60);
- const html=filtered.map(searchCard).join('');
- document.getElementById('toolGrid').innerHTML=html||'<div class="empty">'+(searchReady?'No matching resources found. Try a different keyword.':'Loading search index…')+'</div>';
- const resultCount=document.getElementById('resultCount');
- if(resultCount)resultCount.textContent=savedMode?filtered.length+' saved resources':!q?'Browse the complete ORBIT collection':(matches.length+' results found'+(searchReady?' across ORBIT':' · indexing'));
- const count=document.getElementById('savedCount');if(count)count.textContent=saved.length;
- document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===active));
+ if(savedMode)matches=source.filter(x=>saved.includes(x.title));
+ const grid=document.getElementById('toolGrid');
+ if(grid)grid.innerHTML=matches.slice(0,60).map(searchCard).join('')||'<div class="empty">No matching resources found. Try another keyword.</div>';
+ const count=document.getElementById('resultCount');
+ if(count)count.textContent=savedMode?matches.length+' saved resources':!q?'Browse the complete ORBIT collection':matches.length+' results found';
+ const savedCount=document.getElementById('savedCount');if(savedCount)savedCount.textContent=saved.length;
+ document.querySelectorAll('[data-filter]').forEach(el=>el.classList.toggle('active',el.dataset.filter===active));
 }
 function setFilter(c){active=c;savedMode=false;render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.filter)));
@@ -198,6 +204,14 @@ document.getElementById('searchInput').addEventListener('input',()=>{active='All
 document.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('searchInput').value=b.dataset.query;active='All';render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}));
 function toggleSave(name){saved=saved.includes(name)?saved.filter(x=>x!==name):[...saved,name];try{localStorage.setItem('orbitSaved',JSON.stringify(saved))}catch(e){}render();document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('')}
 function showSaved(){savedMode=!savedMode;active='All';document.getElementById('searchInput').value='';const toggle=document.getElementById('savedToggle');toggle.setAttribute('aria-pressed',String(savedMode));toggle.innerHTML=(savedMode?'↩ All tools':'♡ Saved')+' <span id="savedCount">'+saved.length+'</span>';render();document.getElementById('discover').scrollIntoView({behavior:'smooth'})}
-const menuButton=document.getElementById('hamb'),menuPanel=document.getElementById('navlinks');function closeMobileMenu(){menuPanel.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','Open navigation menu')}menuButton.addEventListener('click',()=>{const isOpen=menuPanel.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(isOpen));menuButton.setAttribute('aria-label',isOpen?'Close navigation menu':'Open navigation menu')});document.querySelectorAll('#navlinks a').forEach(a=>a.addEventListener('click',closeMobileMenu));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu()});
+const menuButton=document.getElementById('hamb'),menuPanel=document.getElementById('navlinks');
+function closeMobileMenu(){if(!menuPanel||!menuButton)return;menuPanel.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','Open navigation menu')}
+if(menuButton&&menuPanel){
+ menuButton.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();const opened=menuPanel.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(opened));menuButton.setAttribute('aria-label',opened?'Close navigation menu':'Open navigation menu')});
+ menuPanel.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMobileMenu));
+ document.addEventListener('click',e=>{if(!menuPanel.contains(e.target)&&!menuButton.contains(e.target))closeMobileMenu()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu()});
+}
+
 document.getElementById('latestGrid').innerHTML=tools.slice(0,4).map(card).join('');document.getElementById('popularGrid').innerHTML=[tools[0],tools[6],tools[1],tools[12]].map(card).join('');document.getElementById('year').textContent=new Date().getFullYear();render();buildGlobalSearchIndex().then(render).catch(()=>{searchReady=true;render()});
 </script></body></html>
