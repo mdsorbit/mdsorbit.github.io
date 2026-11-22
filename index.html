@@ -149,7 +149,7 @@ async function buildGlobalSearchIndex(){
    const hrefRaw=a.getAttribute('href'),title=cleanText(a.textContent);
    if(!title||title.length<2||title.length>100||!hrefRaw||hrefRaw.startsWith('#'))return;
    const href=safeSearchUrl(hrefRaw,page);if(!href)return;
-   if(!/\\.(html|pdf|docx?|xlsx?|pptx?|csv|txt|zip)(?:[?#].*)?$/i.test(hrefRaw))return;
+   if(!/\.(html|pdf|docx?|xlsx?|pptx?|csv|txt|zip)(?:[?#].*)?$/i.test(hrefRaw))return;
    entries.push({title,body:title,page,url:href,type:'Page or file'});
   });
   return entries;
