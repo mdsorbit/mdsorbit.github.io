@@ -33,6 +33,9 @@
 :where(p,li,.desc,.bodycopy,.hero p,.meta,.sub,.muted,.foot){text-wrap:pretty}
 img{max-width:100%;height:auto}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ORBIT consistency and accessibility */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #8db8ff;outline-offset:3px}img{max-width:100%;height:auto}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style></head><body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html" aria-label="MDS ORBIT home"><span class="brandmark">✳</span><span>MDS <em>ORBIT</em></span></a><nav class="navlinks" id="navlinks"><a href="#discover">Discover</a><a href="#categories">Categories</a><a href="prompts.html">Prompts</a><a href="showcase.html">Design Showcase</a><a href="apps.html">Apps Hub</a><a href="ai.html">AI Universe</a><a href="learning.html">Learning Hub</a><a href="guides.html">Guides</a><a href="everyday.html">Everyday Tools</a><a href="document-tools.html">Document Tools</a><a href="office-tools.html">Office & File Tools</a><a href="image-tools.html">Image Tools</a><a href="#about">About</a></nav><div class="navright"><button class="navbtn" id="savedToggle" onclick="showSaved()" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button><a class="navbtn primary" href="#discover">Explore Tools</a><button class="navbtn hamb" id="hamb" type="button" aria-label="Open navigation menu" aria-controls="navlinks" aria-expanded="false">☰ <span>Menu</span></button></div></div></header>
 <main class="container">
